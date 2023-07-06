@@ -251,7 +251,11 @@ export const App = () => {
 
                   <td data-cy="ProductName">{prod.name}</td>
                   <td data-cy="ProductCategory">
-                    <span>🍺</span>
+                    {/* <span */}
+                    {/*  role="img" */}
+                    {/* > */}
+                    {/*  🍺 */}
+                    {/* </span> */}
                     {prod.category.title}
                   </td>
 
