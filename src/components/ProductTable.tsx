@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Product } from './types';
+import { Product } from '../types';
 
 type Props = {
   products: Product[],
