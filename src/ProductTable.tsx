@@ -1,13 +1,23 @@
+import React from 'react';
 import classNames from 'classnames';
+import { Product } from './types';
 
-export const ProductTable = ({
+type Props = {
+  products: Product[],
+  isReversed: boolean,
+  sortType: string,
+  onReverseChange: (value: boolean) => void,
+  onSortTypeChange: (value: string) => void,
+};
+
+export const ProductTable: React.FC<Props> = ({
   products,
   isReversed,
   sortType,
   onReverseChange,
   onSortTypeChange,
 }) => {
-  function sortBy(newSortType) {
+  function sortBy(newSortType: string) {
     const firstClick = newSortType !== sortType;
     const secondClick = newSortType === sortType && !isReversed;
     const thirdClick = newSortType === sortType && isReversed;
@@ -141,7 +151,7 @@ export const ProductTable = ({
             </td>
 
             <td data-cy="ProductCategory">
-              {`${category?.icon} - ${category.title}`}
+              {`${category?.icon} - ${category?.title}`}
             </td>
 
             <td
@@ -151,7 +161,7 @@ export const ProductTable = ({
                 'has-text-danger': user?.sex === 'f',
               })}
             >
-              {user.name}
+              {user?.name}
             </td>
           </tr>
         ))}

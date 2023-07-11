@@ -2,30 +2,74 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import './App.scss';
 
-import usersFromServer from './api/users';
-import categoriesFromServer from './api/categories';
+import users from './api/users';
+import categories from './api/categories';
 import productsFromServer from './api/products';
 import { ProductTable } from './ProductTable';
+import { Product } from './types';
 
-const preparedProducts = productsFromServer.map((product) => {
-  const category = categoriesFromServer.find(
-    ({ id }) => id === product.categoryId,
-  );
-
-  const user = usersFromServer.find(({ id }) => id === category.ownerId);
+const preparedProducts: Product[] = productsFromServer.map((product) => {
+  const category = categories.find(({ id }) => id === product.categoryId);
+  const user = users.find(({ id }) => id === category?.ownerId)
+    || null;
 
   return { ...product, user, category };
 });
 
+function sortProducts(products: Product[], sortType: string) {
+  return products.sort((prA, prB) => {
+    switch (sortType) {
+      case 'ID':
+        return prA.id - prB.id;
+
+      case 'Product':
+        return prA.name.localeCompare(prB.name);
+
+      case 'Category': {
+        if (!prA.category || !prB.category) {
+          return 0;
+        }
+
+        return prA.category.title.localeCompare(prB.category.title);
+      }
+
+      case 'User': {
+        if (!prA.user || !prB.user) {
+          return 0;
+        }
+
+        return prA.user.name.localeCompare(prB.user.name);
+      }
+
+      default:
+        return 0;
+    }
+  });
+}
+
+interface ProductFilter {
+  query: string;
+  userId: number;
+  categoryIds: number[];
+  sortType: string;
+  isReversed: boolean;
+}
+
 function getVisibleProducts(
-  products,
-  { query, userId, categoryIds, sortType, isReversed },
+  products: Product[],
+  {
+    query,
+    userId,
+    categoryIds,
+    sortType,
+    isReversed,
+  }: ProductFilter,
 ) {
   let visibleProducts = [...products];
 
   if (userId) {
     visibleProducts = visibleProducts.filter(
-      product => product.user.id === userId,
+      product => product.user?.id === userId,
     );
   }
 
@@ -44,24 +88,7 @@ function getVisibleProducts(
   }
 
   if (sortType) {
-    visibleProducts.sort((prA, prB) => {
-      switch (sortType) {
-        case 'ID':
-          return prA.id - prB.id;
-
-        case 'Product':
-          return prA.name.localeCompare(prB.name);
-
-        case 'Category':
-          return prA.category.title.localeCompare(prB.category.title);
-
-        case 'User':
-          return prA.user.name.localeCompare(prB.user.name);
-
-        default:
-          return 0;
-      }
-    });
+    visibleProducts = sortProducts(visibleProducts, sortType);
   }
 
   if (isReversed) {
@@ -71,18 +98,18 @@ function getVisibleProducts(
   return visibleProducts;
 }
 
-export const App = () => {
+export const App: React.FC = () => {
   const [userId, setUserId] = useState(0);
   const [query, setQuery] = useState('');
-  const [categoryIds, setCategoryIds] = useState([]);
+  const [categoryIds, setCategoryIds] = useState<number[]>([]);
   const [sortType, setSortType] = useState('');
   const [isReversed, setIsReversed] = useState(false);
 
-  function isCategorySelected(categoryId) {
+  function isCategorySelected(categoryId: number) {
     return categoryIds.includes(categoryId);
   }
 
-  function toggleCategory(categoryId) {
+  function toggleCategory(categoryId: number) {
     if (isCategorySelected(categoryId)) {
       setCategoryIds(categoryIds.filter(id => id !== categoryId));
     } else {
@@ -118,7 +145,7 @@ export const App = () => {
                 All
               </a>
 
-              {usersFromServer.map(user => (
+              {users.map(user => (
                 <a
                   key={user.id}
                   data-cy="FilterUser"
@@ -174,7 +201,7 @@ export const App = () => {
                 All
               </a>
 
-              {categoriesFromServer.map(category => (
+              {categories.map(category => (
                 <a
                   data-cy="Category"
                   className={classNames('button mr-2 my-1', {
