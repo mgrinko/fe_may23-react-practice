@@ -34,9 +34,9 @@ Implement as many options below as you can:
 - Fork, clone, and run `npm i`
 - fix the DEMO LINK below (use your GitHub username and the repo name)
   - [DEMO LINK](https://AnastasiiaKhemych.github.io/fe_may23-react-practice)
-- implement tasks one by one (You can do it in the `App.jsx`)
+- implement tasks one by one (You can do it in the `App.tsx`)
 - `commit`, `push`, and `deploy` after each task
-- Send a link to your `App.jsx` file to your personal Slack channel (for example #fe_apr22_misha_hrynko)
+- Send a link to your `App.tsx` file to your personal Slack channel (for example #fe_apr22_misha_hrynko)
 - Send a message about solving the next step after each `push` and `deploy` (e.g. Task 3 is done)
 - If you are done with the required tasks please proceed with solving the optional once
 - Stop when the time is over (typically 2.5 hours from the start)
